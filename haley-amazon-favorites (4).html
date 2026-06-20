@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haley's Amazon Favorites</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #FAF6F0;
+    --cream2: #F0EBE2;
+    --gold: #B8946A;
+    --gold-light: #D4B896;
+    --dark: #1A1008;
+    --brown: #4A3220;
+    --tan: #9A7248;
+    --white: #ffffff;
+    --border: #E2D8CC;
+    --radius: 12px;
+  }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  .header-eyebrow {
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--tan);
+    margin-bottom: 0.5rem;
+  }
+  header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.6rem;
+    font-weight: 500;
+    color: var(--dark);
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+  header p {
+    font-size: 14px;
+    color: var(--tan);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  /* FILTER BAR */
+  .filter-wrap {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .filter-btn {
+    font-family: 'Jost', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    padding: 5px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--tan);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .filter-btn.active { background: var(--gold); border-color: var(--gold); color: var(--white); }
+
+  /* MAIN */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  /* SECTION */
+  .section { margin-bottom: 2.5rem; }
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tan);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+  }
+
+  /* PRODUCT CARD */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s, transform 0.15s;
+    position: relative;
+  }
+  .card:hover { border-color: var(--gold); transform: translateY(-2px); }
+  .card-img {
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .card-img img { width: 100%; height: 100%; object-fit: cover; }
+  .card-img .icon-placeholder {
+    font-size: 2.5rem;
+    opacity: 0.3;
+  }
+  .card-body {
+    padding: 12px 14px 14px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .card-category {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--tan);
+  }
+  .card-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--dark);
+    line-height: 1.3;
+  }
+  .card-note {
+    font-size: 12px;
+    color: var(--tan);
+    line-height: 1.5;
+    flex: 1;
+    margin-top: 2px;
+  }
+  .card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    align-items: center;
+  }
+  .btn-shop {
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    padding: 6px 14px;
+    background: var(--gold);
+    color: var(--white);
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.15s;
+  }
+  .btn-shop:hover { background: var(--brown); }
+  .btn-edit, .btn-delete {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--tan);
+    transition: all 0.15s;
+  }
+  .btn-edit:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-delete:hover { border-color: #c0392b; color: #c0392b; }
+
+  /* ADD BUTTON */
+  .add-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+  .btn-add {
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    padding: 10px 24px;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    border-radius: 24px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-add:hover { background: var(--gold); color: var(--white); }
+
+  /* EMPTY STATE */
+  .empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--tan);
+  }
+  .empty p { font-size: 14px; margin-top: 0.5rem; }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,16,8,0.5);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 2rem;
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--dark);
+    margin-bottom: 1.5rem;
+  }
+  .field { margin-bottom: 1.1rem; }
+  .field label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--tan);
+    margin-bottom: 5px;
+  }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--cream);
+    color: var(--dark);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--gold); }
+  .field textarea { resize: vertical; min-height: 70px; }
+  .modal-btns {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+  }
+  .btn-cancel {
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    padding: 9px 20px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--tan);
+    cursor: pointer;
+  }
+  .btn-save {
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    padding: 9px 24px;
+    border: none;
+    border-radius: 20px;
+    background: var(--gold);
+    color: var(--white);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-save:hover { background: var(--brown); }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    font-size: 11px;
+    color: var(--gold-light);
+    border-top: 1px solid var(--border);
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 2rem; }
+    .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-eyebrow">Haley's picks</div>
+  <h1>My Amazon Favorites</h1>
+  <p>Everything I actually use and love</p>
+</header>
+
+<div style="background: #B8946A; text-align: center; padding: 12px 1rem; font-family: 'Jost', sans-serif; font-size: 14px; color: #fff; letter-spacing: 0.03em;">
+  🛍 <strong>Prime Day is here!</strong> Filter by "Prime Deals" to shop my top picks on sale.
+</div>
+
+<div style="background: #F0EBE2; border-bottom: 1px solid #E2D8CC; text-align: center; padding: 10px 1rem; font-family: 'Jost', sans-serif; font-size: 13px; color: #4A3220; letter-spacing: 0.02em;">
+  As an Amazon Associate I earn from qualifying purchases.
+</div>
+
+<div class="filter-wrap" id="filter-wrap">
+  <button class="filter-btn active" data-cat="all">All</button>
+  <button class="filter-btn" data-cat="primedeals">🛍 Prime Deals</button>
+  <button class="filter-btn" data-cat="beauty">Beauty</button>
+  <button class="filter-btn" data-cat="home">Home</button>
+  <button class="filter-btn" data-cat="kitchen">Kitchen</button>
+  <button class="filter-btn" data-cat="fashion">Fashion</button>
+  <button class="filter-btn" data-cat="clothing">Clothing</button>
+  <button class="filter-btn" data-cat="wellness">Wellness</button>
+  <button class="filter-btn" data-cat="other">Other</button>
+</div>
+
+<main>
+  <div class="add-wrap">
+    <button class="btn-add" onclick="openModal()">+ Add a product</button>
+  </div>
+  <div id="products-container"></div>
+</main>
+
+<footer>Made with love · Haley's Amazon Favorites</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2 id="modal-title">Add a product</h2>
+    <div class="field">
+      <label>Product name</label>
+      <input type="text" id="f-name" placeholder="e.g. Aquaphor Healing Balm Stick">
+    </div>
+    <div class="field">
+      <label>Amazon affiliate link</label>
+      <input type="url" id="f-link" placeholder="https://amzn.to/...">
+    </div>
+    <div class="field">
+      <label>Category</label>
+      <select id="f-category">
+        <option value="primedeals">🛍 Prime Deals</option>
+        <option value="beauty">Beauty</option>
+        <option value="home">Home</option>
+        <option value="kitchen">Kitchen</option>
+        <option value="fashion">Fashion</option>
+        <option value="clothing">Clothing</option>
+        <option value="wellness">Wellness</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Why you love it</label>
+      <textarea id="f-note" placeholder="e.g. My go-to for dry lips and cuticles — keeps skin soft all day."></textarea>
+    </div>
+    <div class="field">
+      <label>Image URL (optional)</label>
+      <input type="url" id="f-image" placeholder="Paste an image link or leave blank">
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveProduct()">Save product</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'haley_amazon_favorites';
+const CATEGORY_ICONS = {
+  beauty: '✨', home: '🏡', kitchen: '🍳', fashion: '👜', clothing: '👗', wellness: '🌿', primedeals: '🛍', other: '⭐'
+};
+const CATEGORY_LABELS = {
+  beauty: 'Beauty', home: 'Home', kitchen: 'Kitchen', fashion: 'Fashion', clothing: 'Clothing', wellness: 'Wellness', primedeals: 'Prime Deals', other: 'Other'
+};
+
+let activeCategory = 'all';
+let editingId = null;
+
+const SEED_PRODUCTS = [{"id":1781979789928,"name":"Aquaphor Healing Balm Stick","link":"https://amzn.to/4oG9Rep","category":"beauty","note":"My go-to for dry lips, cuticles, and skin — with avocado oil and shea butter.","image":"https://m.media-amazon.com/images/I/61qafLBeLWL._SL1500_.jpg"},{"id":1781981797935,"name":"Exfoliating Face and Body Wash Cloths","link":"https://amzn.to/4eTl5c6","category":"beauty","note":"These little cloths do more than any fancy scrub I've tried. Exfoliates head to toe, lathers perfectly, and dries fast so it never gets gross. My shower essential.","image":"https://m.media-amazon.com/images/I/81-dcbawk4L._AC_SL1500_.jpg"},{"id":1781982007034,"name":"Grandma's Secret Spot Remover","link":"https://amzn.to/4b1D9hL","category":"home","note":"This stuff is magic in a bottle. I've gotten out stains that survived the washing machine — no bleach, no damage to fabric. A must-have in every laundry room.","image":"https://m.media-amazon.com/images/I/81ZydDy5x-L._AC_SL1500_.jpg"},{"id":1781982231001,"name":"SOL DE JANERIO Glowmotions Glow Body Oil","link":"https://amzn.to/4vnepJ0","category":"beauty","note":"Obsessed. This gives the most beautiful sun-kissed shimmer on legs, arms, chest and back. Smells incredible and looks like you're literally glowing from within.","image":"https://m.media-amazon.com/images/I/71Rf1M7kIzL._SL1500_.jpg"},{"id":1781982428701,"name":"Lumineux Teeth Whitening Strips","link":"https://amzn.to/3QATHGy","category":"beauty","note":"Finally a whitening strip that doesn't make my teeth scream. Peroxide free, no sensitivity, and actually works. My enamel thanks me every time.","image":"https://m.media-amazon.com/images/I/91imwWDgU9L._AC_SL1500_.jpg"},{"id":1781982626451,"name":"12 x 12 Grease Proof Deli Wrappers","link":"https://amzn.to/4b1D9hL","category":"kitchen","note":"My favorite lazy lunch hack — line a basket with one of these and you're done. Grease proof, no mess, no cleanup. Genius and so affordable.","image":"https://m.media-amazon.com/images/I/81AnR+fg3LL._AC_SX679_.jpg"},{"id":1781983221024,"name":"Bare August Glass Foot File Callus Remover for Feet","link":"https://amzn.to/4xFpuXl","category":"beauty","note":"Obsessed. This little tool does more for my feet than any pedicure product I've tried — and it's made for use right in the shower. Smooth, soft, no rough patches — game changer. Stay tuned for my favorite dry callus remover too!","image":"https://m.media-amazon.com/images/I/711sJiKWvAL._AC_SL1500_.jpg"},{"id":1781983409841,"name":"Bare August Glass Foot File Callus Remover","link":"https://amzn.to/4eYDwLx","category":"beauty","note":"I use this one after my shower and I am obsessed. Dead skin just rolls off with zero effort — your feet will feel like you just had a professional pedicure.","image":"https://m.media-amazon.com/images/I/51VqHdd3+iL._AC_SL1000_.jpg"},{"id":1781983550375,"name":"Lansinoh Lanolin Lip Balm","link":"https://amzn.to/4vp7I9y","category":"beauty","note":"This little tube is everything. One clean ingredient that locks in moisture like nothing else — my lips stay soft all day. No petroleum, no parabens, just pure lanolin.","image":"https://m.media-amazon.com/images/I/71x4MHpqd0L._AC_SL1500_.jpg"},{"id":1781983719125,"name":"COLOR WOW Dream Coat Supernatural Spray","link":"https://amzn.to/44loj1T","category":"beauty","note":"This heat protectant leaves my hair so smooth and silky it feels like I just left the salon. Frizz and humidity are no match for this one.","image":"https://m.media-amazon.com/images/I/51UYq7UwqrL._SL1000_.jpg"},{"id":1781983895225,"name":"OPI GelColor Funny Bunny","link":"https://amzn.to/4vjZlMf","category":"beauty","note":"The perfect creamy white gel polish. I pair it with OPI Bubble Bath for the most beautiful soft white-pink combo — looks expensive every single time.","image":"https://m.media-amazon.com/images/I/61rovy6q1oL._SL1500_.jpg"},{"id":1781984083108,"name":"OPI GelColor Bubble Bath","link":"https://amzn.to/4eFmcLb","category":"beauty","note":"Bubble Bath is my other half to Funny Bunny — together they make the most gorgeous soft pink-white nail. Alone it's the perfect understated pale pink. A staple.","image":"https://m.media-amazon.com/images/I/61pSo9cf82L._SL1500_.jpg"},{"id":1781984221609,"name":"Benefit Cosmetics High Beam Liquid Face Pink Highlighter","link":"https://amzn.to/4voELKE","category":"beauty","note":"High Beam is iconic for a reason. A tiny drop gives the prettiest pink glow on cheekbones, brow bone and cupid's bow — subtle but stunning.","image":"https://m.media-amazon.com/images/I/41zs6otKTcL._SX679_.jpg"},{"id":1781984404192,"name":"Saie Glowy Super Gel - Warmglow","link":"https://amzn.to/3QC2sAb","category":"beauty","note":"Warmglow is the ideal shade for a natural lit-from-within glow. Works as a primer, serum and highlighter all in one — radiant, luminous skin with zero effort.","image":"https://m.media-amazon.com/images/I/41R8y3WmPsL._SX679_.jpg"},{"id":1781984658742,"name":"Eureka E20 Evo Plus Robot Vacuum","link":"https://amzn.to/4oG0Dig","category":"home","note":"This vacuum changed my life. The self emptying station means I barely have to think about it — it vacuums and empties itself. Clean floors on complete autopilot.","image":"https://m.media-amazon.com/images/I/71PH8XENJtL._AC_SL1500_.jpg"},{"id":1781984998892,"name":"Grandma's Secret Spot Remover Laundry Spray","link":"https://amzn.to/4fYorvu","category":"home","note":"The spray version of my favorite stain remover — perfect for quick treatment before tossing clothes in the wash. No bleach, no toxins, just works. Keep one in the laundry room.","image":"https://m.media-amazon.com/images/I/71kFDTAS5TL._AC_SX679_.jpg"}];
+
+let products = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+if (!products) {
+  products = SEED_PRODUCTS;
+  save();
+}
+
+function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+}
+
+function render() {
+  const filtered = activeCategory === 'all' ? products : products.filter(p => p.category === activeCategory);
+  const container = document.getElementById('products-container');
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty"><div style="font-size:2rem">${CATEGORY_ICONS[activeCategory] || '⭐'}</div><p>No picks in this category yet.<br>Click "Add a product" to get started.</p></div>`;
+    return;
+  }
+
+  const grouped = {};
+  filtered.forEach(p => {
+    if (!grouped[p.category]) grouped[p.category] = [];
+    grouped[p.category].push(p);
+  });
+
+  let html = '';
+  Object.keys(grouped).forEach(cat => {
+    html += `<div class="section">`;
+    if (activeCategory === 'all') {
+      html += `<div class="section-label">${CATEGORY_LABELS[cat] || cat}</div>`;
+    }
+    html += `<div class="grid">`;
+    grouped[cat].forEach(p => {
+      html += `
+        <div class="card">
+          <div class="card-img">
+            ${p.image ? `<img src="${p.image}" alt="${p.name}" onerror="this.parentElement.innerHTML='<span class=\\'icon-placeholder\\'>${CATEGORY_ICONS[p.category] || '⭐'}</span>'">` : `<span class="icon-placeholder">${CATEGORY_ICONS[p.category] || '⭐'}</span>`}
+          </div>
+          <div class="card-body">
+            <div class="card-category">${CATEGORY_LABELS[p.category] || p.category}</div>
+            <div class="card-name">${p.name}</div>
+            <div class="card-note">${p.note || ''}</div>
+            <div class="card-actions">
+              <a class="btn-shop" href="${p.link}" target="_blank" rel="nofollow">Shop ↗</a>
+              <button class="btn-edit" onclick="editProduct(${p.id})" title="Edit">✏️</button>
+              <button class="btn-delete" onclick="deleteProduct(${p.id})" title="Delete">🗑</button>
+            </div>
+          </div>
+        </div>`;
+    });
+    html += `</div></div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+// Filters
+document.getElementById('filter-wrap').addEventListener('click', e => {
+  if (!e.target.matches('.filter-btn')) return;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeCategory = e.target.dataset.cat;
+  render();
+});
+
+// Modal
+function openModal(product) {
+  editingId = product ? product.id : null;
+  document.getElementById('modal-title').textContent = product ? 'Edit product' : 'Add a product';
+  document.getElementById('f-name').value = product?.name || '';
+  document.getElementById('f-link').value = product?.link || '';
+  document.getElementById('f-category').value = product?.category || 'beauty';
+  document.getElementById('f-note').value = product?.note || '';
+  document.getElementById('f-image').value = product?.image || '';
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  editingId = null;
+}
+
+function saveProduct() {
+  const name = document.getElementById('f-name').value.trim();
+  const link = document.getElementById('f-link').value.trim();
+  if (!name || !link) { alert('Please add at least a product name and link.'); return; }
+
+  const product = {
+    id: editingId || Date.now(),
+    name,
+    link,
+    category: document.getElementById('f-category').value,
+    note: document.getElementById('f-note').value.trim(),
+    image: document.getElementById('f-image').value.trim()
+  };
+
+  if (editingId) {
+    products = products.map(p => p.id === editingId ? product : p);
+  } else {
+    products.push(product);
+  }
+
+  save();
+  render();
+  closeModal();
+}
+
+function editProduct(id) {
+  const p = products.find(p => p.id === id);
+  if (p) openModal(p);
+}
+
+function deleteProduct(id) {
+  if (!confirm('Remove this product?')) return;
+  products = products.filter(p => p.id !== id);
+  save();
+  render();
+}
+
+// Close modal on overlay click
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal')) closeModal();
+});
+
+render();
+</script>
+</body>
+</html>
